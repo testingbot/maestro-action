@@ -22,12 +22,13 @@ jobs:
         with:
           node-version: 22
       # Exercise the CLI from source so the action can be tested against
-      # flags that are merged but not yet published to npm. Users get the
-      # published @testingbot/cli via npx (see cli-version).
+      # flags that are not yet published to npm. Users get the published
+      # @testingbot/cli via npx (see cli-version).
+      # TODO: switch ref back to main once testingbotctl#34 and #35 merge.
       - uses: actions/checkout@v4
         with:
           repository: testingbot/testingbotctl
-          ref: main
+          ref: feat/TB-375-device-matrix
           path: .cli
       - name: Build @testingbot/cli from source
         shell: bash
@@ -47,10 +48,11 @@ jobs:
           env: |
             USERNAME=demo
             PASSWORD=secret
-          device: iPhone 16
-          device-version: '18'
-          # TODO once testingbotctl#34/#35 are on main: add metadata and
-          # device-matrix inputs here.
+          metadata: |
+            team=mobile
+          device-matrix: |
+            iPhone 16:18
+            iPhone 15:17
           dry-run: true
       - name: Check outputs
         shell: bash
