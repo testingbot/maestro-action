@@ -1,0 +1,186 @@
+name: 'TestingBot Maestro'
+description: 'Run Maestro flows on TestingBot real devices, emulators and simulators. Drop-in replacement for the Maestro Cloud action.'
+author: 'TestingBot'
+branding:
+  icon: 'smartphone'
+  color: 'green'
+
+inputs:
+  api-key:
+    description: 'TestingBot API key (https://testingbot.com/members/user/edit).'
+    required: true
+  api-secret:
+    description: 'TestingBot API secret.'
+    required: true
+  app-file:
+    description: 'Path to the app under test (.apk, .ipa, .app or .zip). Either this or app-binary-id is required.'
+    required: false
+  app-binary-id:
+    description: 'Project ID of an app uploaded earlier (see the app-id output or "testingbot upload"); skips the upload.'
+    required: false
+  workspace:
+    description: 'Directory (or file, glob, or newline-separated list of these) containing your Maestro flows.'
+    required: false
+    default: '.maestro'
+  name:
+    description: 'Name for this run in the TestingBot dashboard. Defaults to the PR title, then the commit message.'
+    required: false
+  async:
+    description: 'Submit the run and return immediately. The step never fails on test results and flow-results is empty.'
+    required: false
+    default: 'false'
+  timeout:
+    description: 'Minutes to wait for results before giving up (exit code 1). Ignored with async.'
+    required: false
+    default: '60'
+  env:
+    description: 'Environment variables for the flows, one KEY=VALUE per line.'
+    required: false
+  include-tags:
+    description: 'Only run flows with these tags (comma-separated).'
+    required: false
+  exclude-tags:
+    description: 'Skip flows with these tags (comma-separated).'
+    required: false
+  exclude-flows:
+    description: 'Flow files, directories or globs to leave out (comma-separated).'
+    required: false
+  device:
+    description: 'Device name, e.g. "Pixel 9" or "iPhone 16". Defaults to any suitable device.'
+    required: false
+  device-version:
+    description: 'OS version, e.g. "14" or "18.2".'
+    required: false
+  platform:
+    description: 'Android or iOS. Detected from the app file when omitted.'
+    required: false
+  real-device:
+    description: 'Use a real device instead of an emulator/simulator.'
+    required: false
+    default: 'false'
+  device-matrix:
+    description: 'Run every flow on each listed device: "<device>[:<version>][:real]", one per line or comma-separated. Cannot be combined with device/device-version.'
+    required: false
+  device-locale:
+    description: 'Device locale, e.g. en_US or de_DE.'
+    required: false
+  timezone:
+    description: 'Device timezone, e.g. Europe/London.'
+    required: false
+  orientation:
+    description: 'PORTRAIT or LANDSCAPE.'
+    required: false
+  google-play:
+    description: 'Use a Google Play enabled Android emulator.'
+    required: false
+    default: 'false'
+  other-app:
+    description: 'Companion apps to install alongside the app, one path or tb:// URL per line (max 4).'
+    required: false
+  retry:
+    description: 'Retry failed flows up to N times (0-2).'
+    required: false
+    default: '0'
+  shard-split:
+    description: 'Split flows across N parallel sessions per device.'
+    required: false
+  maestro-version:
+    description: 'Maestro version to run, e.g. "2.0.10".'
+    required: false
+  report:
+    description: 'Report to download after completion: junit, html, html-detailed or allure.'
+    required: false
+  report-output-dir:
+    description: 'Directory for downloaded reports.'
+    required: false
+    default: 'testingbot-reports'
+  download-artifacts:
+    description: 'Download logs, screenshots and video: all or failed.'
+    required: false
+  artifacts-output-dir:
+    description: 'Directory for the downloaded artifacts zip.'
+    required: false
+    default: 'testingbot-artifacts'
+  metadata:
+    description: 'Extra metadata shown on the run, one KEY=VALUE per line.'
+    required: false
+  groups:
+    description: 'Dashboard groups to tag the run with (comma-separated).'
+    required: false
+  cli-version:
+    description: 'Version of @testingbot/cli to use.'
+    required: false
+    default: 'latest'
+  dry-run:
+    description: 'Validate everything and print the request without uploading or running (useful for testing workflows).'
+    required: false
+    default: 'false'
+  extra-args:
+    description: 'Additional raw arguments appended to the testingbot maestro command.'
+    required: false
+
+outputs:
+  app-id:
+    description: 'TestingBot project ID. Pass it to app-binary-id in a later step to reuse the uploaded app.'
+    value: ${{ steps.run.outputs.app-id }}
+  console-url:
+    description: 'Link to the results in the TestingBot dashboard.'
+    value: ${{ steps.run.outputs.console-url }}
+  outcome:
+    description: 'passed, failed, started (async), dry-run or error.'
+    value: ${{ steps.run.outputs.outcome }}
+  flow-results:
+    description: 'JSON array of per-flow results: name, status, passed, device, runId, attempt, latest, errors. Empty with async.'
+    value: ${{ steps.run.outputs.flow-results }}
+  results-file:
+    description: 'Path to the full JSON results document written by the CLI.'
+    value: ${{ steps.run.outputs.results-file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Maestro flows on TestingBot
+      id: run
+      shell: bash
+      env:
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_API_SECRET: ${{ inputs.api-secret }}
+        INPUT_APP_FILE: ${{ inputs.app-file }}
+        INPUT_APP_BINARY_ID: ${{ inputs.app-binary-id }}
+        INPUT_WORKSPACE: ${{ inputs.workspace }}
+        INPUT_NAME: ${{ inputs.name }}
+        INPUT_ASYNC: ${{ inputs.async }}
+        INPUT_TIMEOUT: ${{ inputs.timeout }}
+        INPUT_ENV: ${{ inputs.env }}
+        INPUT_INCLUDE_TAGS: ${{ inputs.include-tags }}
+        INPUT_EXCLUDE_TAGS: ${{ inputs.exclude-tags }}
+        INPUT_EXCLUDE_FLOWS: ${{ inputs.exclude-flows }}
+        INPUT_DEVICE: ${{ inputs.device }}
+        INPUT_DEVICE_VERSION: ${{ inputs.device-version }}
+        INPUT_PLATFORM: ${{ inputs.platform }}
+        INPUT_REAL_DEVICE: ${{ inputs.real-device }}
+        INPUT_DEVICE_MATRIX: ${{ inputs.device-matrix }}
+        INPUT_DEVICE_LOCALE: ${{ inputs.device-locale }}
+        INPUT_TIMEZONE: ${{ inputs.timezone }}
+        INPUT_ORIENTATION: ${{ inputs.orientation }}
+        INPUT_GOOGLE_PLAY: ${{ inputs.google-play }}
+        INPUT_OTHER_APP: ${{ inputs.other-app }}
+        INPUT_RETRY: ${{ inputs.retry }}
+        INPUT_SHARD_SPLIT: ${{ inputs.shard-split }}
+        INPUT_MAESTRO_VERSION: ${{ inputs.maestro-version }}
+        INPUT_REPORT: ${{ inputs.report }}
+        INPUT_REPORT_OUTPUT_DIR: ${{ inputs.report-output-dir }}
+        INPUT_DOWNLOAD_ARTIFACTS: ${{ inputs.download-artifacts }}
+        INPUT_ARTIFACTS_OUTPUT_DIR: ${{ inputs.artifacts-output-dir }}
+        INPUT_METADATA: ${{ inputs.metadata }}
+        INPUT_GROUPS: ${{ inputs.groups }}
+        INPUT_CLI_VERSION: ${{ inputs.cli-version }}
+        INPUT_DRY_RUN: ${{ inputs.dry-run }}
+        INPUT_EXTRA_ARGS: ${{ inputs.extra-args }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      run: bash "${{ github.action_path }}/scripts/run.sh"

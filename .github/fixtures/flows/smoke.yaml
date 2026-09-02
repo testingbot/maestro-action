@@ -1,0 +1,7 @@
+appId: com.example.app
+name: smoke
+tags:
+  - smoke
+---
+- launchApp
+- assertVisible: "Welcome"
