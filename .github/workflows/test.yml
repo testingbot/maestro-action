@@ -24,11 +24,10 @@ jobs:
       # Exercise the CLI from source so the action can be tested against
       # flags that are not yet published to npm. Users get the published
       # @testingbot/cli via npx (see cli-version).
-      # TODO: switch ref back to main once testingbotctl#34 and #35 merge.
       - uses: actions/checkout@v4
         with:
           repository: testingbot/testingbotctl
-          ref: feat/TB-375-device-matrix
+          ref: main
           path: .cli
       - name: Build @testingbot/cli from source
         shell: bash
