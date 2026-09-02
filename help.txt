@@ -1,0 +1,101 @@
+Usage: testingbot maestro [options] [appFile] [flows...]
+
+Run Maestro flows on TestingBot.
+
+Arguments:
+  appFile                        Path to application under test (.apk, .ipa,
+                                 .app or .zip)
+  flows                          Paths to flow files, directories, or glob
+                                 patterns (can specify multiple)
+
+Options:
+  --app <path>                   Path to application under test (.apk, .ipa,
+                                 .app, or .zip).
+  --app-binary-id <projectId>    Reuse the app of a project uploaded earlier
+                                 (see "testingbot upload") instead of uploading
+                                 one. All positional arguments are then flows.
+  --other-app <path>             Additional app to install alongside --app
+                                 (.apk, .ipa, .app, or .zip). Repeatable, max 4.
+                                 (default: [])
+  --device <device>              Device name to use for testing (e.g., "Pixel
+                                 9", "iPhone 17").
+  --platform <platform>          Platform name: Android or iOS.
+  --deviceVersion <version>      OS version (e.g., "14", "17.2").
+  --real-device                  Use a real device instead of an
+                                 emulator/simulator.
+  --device-matrix <cells>        Run every flow on each listed device:
+                                 "<device>[:<version>][:real]", comma-separated
+                                 or repeatable (e.g. "Pixel 9:14,Samsung Galaxy
+                                 S24:14:real"). Cannot be combined with --device
+                                 or --deviceVersion.
+  --google-play                  Use the Google Play Store-enabled version
+                                 (Android emulator only).
+  --orientation <orientation>    Screen orientation: PORTRAIT or LANDSCAPE.
+  --device-locale <locale>       Device locale (e.g., "en_US", "de_DE").
+  --timezone <timezone>          Device timezone (e.g., "America/New_York",
+                                 "Europe/London").
+  --name <name>                  Name for this Maestro run.
+  --groups <names>               Tag the test session with one or more groups
+                                 (comma-separated).
+  --throttle-network <speed>     Network throttling: 4G, 3G, Edge, airplane, or
+                                 disable.
+  --geo-country-code <code>      Geographic IP location (ISO country code, e.g.,
+                                 "US", "DE").
+  --include-tags <tags>          Only run flows with these tags
+                                 (comma-separated).
+  --exclude-tags <tags>          Exclude flows with these tags
+                                 (comma-separated).
+  --exclude-flows <paths>        Flow files, directories or globs to leave out
+                                 (comma-separated, repeatable).
+  -e, --env <KEY=VALUE>          Environment variable to pass to Maestro flows
+                                 (can be used multiple times). (default: [])
+  --config <path>                Path to a custom Maestro config file (default:
+                                 config.yaml in project root).
+  --maestro-version <version>    Maestro version to use (e.g., "2.0.10").
+  -q, --quiet                    Quieter console output without progress
+                                 updates.
+  --retry <count>                Retry failed flows up to N times (0-2, default
+                                 0). Stops as soon as a flow passes. (default:
+                                 0)
+  --async                        Start tests and exit immediately without
+                                 waiting for results.
+  --dry-run                      Validate and prepare everything but skip HTTP
+                                 calls. Shows what would be sent.
+  -t, --tunnel                   Start a TestingBot tunnel for this test run.
+  --tunnel-identifier <id>       Identifier for the tunnel (allows multiple
+                                 tunnels).
+  --report <format>              Download test report after completion: html,
+                                 html-detailed, junit, or allure.
+  --report-output-dir <path>     Directory to save test reports (required when
+                                 --report is used).
+  --download-artifacts [mode]    Download test artifacts after completion. Mode:
+                                 all (default) or failed.
+  --artifacts-output-dir <path>  Directory to save artifacts zip (defaults to
+                                 current directory).
+  --ignore-checksum-check        Skip checksum verification and always upload
+                                 the app.
+  --shard-split <number>         Number of chunks to split flows into (by
+                                 default each flow runs on its own session).
+  --branch <name>                Git branch this upload was built from.
+  --commit-sha <sha>             The commit SHA of this upload.
+  --pr-url <url>                 URL of the pull request this upload originated
+                                 from.
+  -m, --metadata <KEY=VALUE>     Arbitrary metadata to attach to the run, shown
+                                 in the dashboard (repeatable).
+  --pull-request-id <id>         The ID of the pull request this upload
+                                 originated from.
+  --repo-name <name>             Repository name (e.g., GitHub repo slug).
+  --repo-owner <owner>           Repository owner (e.g., GitHub organization or
+                                 user slug).
+  --api-key <key>                TestingBot API key.
+  --api-secret <secret>          TestingBot API secret.
+  --debug                        Enable debug logging of API responses.
+  --json                         Print results as JSON on stdout; logs move to
+                                 stderr. Exits 2 when tests fail, 1 on CLI
+                                 errors.
+  --json-file                    Write results as JSON to a file (default:
+                                 <appId>_testingbot.json). Exits 0 even when
+                                 tests fail, 1 on CLI errors.
+  --json-file-name <path>        Custom path for the JSON results file (requires
+                                 --json-file).
+  -h, --help                     display help for command

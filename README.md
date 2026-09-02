@@ -62,6 +62,10 @@ The step fails when a flow fails (exit code 2) and on CLI or infrastructure erro
 | `artifacts-output-dir` | Where the artifacts zip goes. | `testingbot-artifacts` |
 | `metadata` | Extra `KEY=VALUE` metadata shown on the run, one per line. | |
 | `groups` | Dashboard groups (comma-separated). | |
+| `throttle-network` | Network profile: `4G`, `3G`, `Edge`, `airplane` or `disable`. | |
+| `geo-country-code` | Device IP geolocation, ISO country code. | |
+| `tunnel` / `tunnel-identifier` | Start a [TestingBot Tunnel](https://testingbot.com/support/app-automate/maestro/tunnel) so the device reaches hosts on the runner network. Not with `async`. | `false` |
+| `ignore-checksum-check` | Always upload the app instead of reusing an identical stored binary. | `false` |
 | `cli-version` | `@testingbot/cli` version to use. | `latest` |
 | `dry-run` | Validate and print the request without running anything. | `false` |
 | `extra-args` | Raw extra arguments for `testingbot maestro`. | |

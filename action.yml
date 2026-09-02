@@ -107,6 +107,23 @@ inputs:
   groups:
     description: 'Dashboard groups to tag the run with (comma-separated).'
     required: false
+  throttle-network:
+    description: 'Network throttling profile: 4G, 3G, Edge, airplane or disable.'
+    required: false
+  geo-country-code:
+    description: 'Geographic IP location for the device (ISO country code, e.g. US or DE).'
+    required: false
+  tunnel:
+    description: 'Start a TestingBot Tunnel for the run so the device can reach hosts on the runner network. Not with async.'
+    required: false
+    default: 'false'
+  tunnel-identifier:
+    description: 'Identifier for the tunnel, when several tunnels run in parallel.'
+    required: false
+  ignore-checksum-check:
+    description: 'Always upload the app instead of reusing an identical binary already stored.'
+    required: false
+    default: 'false'
   cli-version:
     description: 'Version of @testingbot/cli to use.'
     required: false
@@ -174,6 +191,11 @@ runs:
         INPUT_ARTIFACTS_OUTPUT_DIR: ${{ inputs.artifacts-output-dir }}
         INPUT_METADATA: ${{ inputs.metadata }}
         INPUT_GROUPS: ${{ inputs.groups }}
+        INPUT_THROTTLE_NETWORK: ${{ inputs.throttle-network }}
+        INPUT_GEO_COUNTRY_CODE: ${{ inputs.geo-country-code }}
+        INPUT_TUNNEL: ${{ inputs.tunnel }}
+        INPUT_TUNNEL_IDENTIFIER: ${{ inputs.tunnel-identifier }}
+        INPUT_IGNORE_CHECKSUM_CHECK: ${{ inputs.ignore-checksum-check }}
         INPUT_CLI_VERSION: ${{ inputs.cli-version }}
         INPUT_DRY_RUN: ${{ inputs.dry-run }}
         INPUT_EXTRA_ARGS: ${{ inputs.extra-args }}
