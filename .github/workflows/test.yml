@@ -21,9 +21,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # Exercise the CLI from source so the action can be tested against
+      # flags that are merged but not yet published to npm. Users get the
+      # published @testingbot/cli via npx (see cli-version).
+      - uses: actions/checkout@v4
+        with:
+          repository: testingbot/testingbotctl
+          ref: main
+          path: .cli
+      - name: Build @testingbot/cli from source
+        shell: bash
+        run: cd .cli && npm ci && npm run build
       - name: Run the action in dry-run mode
         id: maestro
         uses: ./
+        env:
+          TESTINGBOT_CLI_COMMAND: node ${{ github.workspace }}/.cli/dist/index.js
         with:
           api-key: dry-run
           api-secret: dry-run
