@@ -95,7 +95,11 @@ if [[ -n "${INPUT_EXTRA_ARGS:-}" ]]; then
 fi
 
 # TESTINGBOT_CLI_COMMAND lets the action's own tests run an unpublished CLI build.
-cli="${TESTINGBOT_CLI_COMMAND:-npx --yes @testingbot/cli@${INPUT_CLI_VERSION:-latest}}"
+if [[ -n "${TESTINGBOT_CLI_COMMAND:-}" ]]; then
+  read -r -a cli <<< "$TESTINGBOT_CLI_COMMAND"
+else
+  cli=(npx --yes "@testingbot/cli@${INPUT_CLI_VERSION:-latest}")
+fi
 
 # Log the command with credentials redacted (the values after --api-key/--api-secret).
 display=()
@@ -111,15 +115,15 @@ echo "::endgroup::"
 
 set +e
 if is_true "${INPUT_ASYNC:-}" || is_true "${INPUT_DRY_RUN:-}"; then
-  $cli "${args[@]}"
+  "${cli[@]}" "${args[@]}"
 else
   timeout_min="${INPUT_TIMEOUT:-60}"
   if command -v timeout >/dev/null 2>&1; then
-    timeout --signal=INT --kill-after=30s "$((timeout_min * 60))s" $cli "${args[@]}"
+    timeout --signal=INT --kill-after=30s "$((timeout_min * 60))s" "${cli[@]}" "${args[@]}"
   elif command -v gtimeout >/dev/null 2>&1; then
-    gtimeout --signal=INT --kill-after=30s "$((timeout_min * 60))s" $cli "${args[@]}"
+    gtimeout --signal=INT --kill-after=30s "$((timeout_min * 60))s" "${cli[@]}" "${args[@]}"
   else
-    $cli "${args[@]}"
+    "${cli[@]}" "${args[@]}"
   fi
 fi
 cli_exit=$?

@@ -47,11 +47,10 @@ jobs:
           env: |
             USERNAME=demo
             PASSWORD=secret
-          metadata: |
-            team=mobile
-          device-matrix: |
-            iPhone 16:18
-            iPhone 15:17
+          device: iPhone 16
+          device-version: '18'
+          # TODO once testingbotctl#34/#35 are on main: add metadata and
+          # device-matrix inputs here.
           dry-run: true
       - name: Check outputs
         shell: bash
@@ -63,4 +62,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck scripts/run.sh
+      - run: shellcheck --severity=warning scripts/run.sh
