@@ -1,0 +1,49 @@
+name: e2e
+
+# Runs the action for real against TestingBot on every pull request, using the
+# public sample app. Needs the TB_KEY / TB_SECRET repository secrets; with the
+# TestingBot GitHub App installed on this repository the run also posts a
+# "TestingBot / tests" check on the pull request.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sample-app:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the TestingBot sample app
+        run: curl -sSL https://testingbot.com/appium/sample.apk -o sample.apk
+      - name: Run Maestro flows on TestingBot
+        id: maestro
+        uses: ./
+        with:
+          api-key: ${{ secrets.TB_KEY }}
+          api-secret: ${{ secrets.TB_SECRET }}
+          app-file: sample.apk
+          workspace: .github/fixtures/e2e
+          name: maestro-action e2e
+          report: junit
+          download-artifacts: failed
+          metadata: |
+            source=maestro-action-e2e
+      - name: Show outputs
+        if: always()
+        run: |
+          echo "outcome=${{ steps.maestro.outputs.outcome }}"
+          echo "app-id=${{ steps.maestro.outputs.app-id }}"
+          echo "console-url=${{ steps.maestro.outputs.console-url }}"
+          echo '${{ steps.maestro.outputs.flow-results }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-e2e-results
+          path: |
+            testingbot-reports
+            testingbot-artifacts
+          if-no-files-found: ignore
