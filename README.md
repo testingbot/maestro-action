@@ -1,6 +1,6 @@
 # TestingBot Maestro GitHub Action
 
-Run your [Maestro](https://maestro.mobile.dev) flows on [TestingBot](https://testingbot.com) real devices, emulators and simulators from GitHub Actions. A thin wrapper around the [`testingbot` CLI](https://github.com/testingbot/testingbotctl) with inputs that mirror the Maestro Cloud action, so migrating is usually a one-line change.
+Run your [Maestro](https://maestro.mobile.dev) flows on [TestingBot](https://testingbot.com) real devices, emulators and simulators from GitHub Actions. Documentation: [Maestro on GitHub Actions](https://testingbot.com/support/app-automate/maestro/ci-cd/github-actions) and [GitHub PR Checks for Maestro](https://testingbot.com/support/app-automate/maestro/ci-cd/github-pr-checks). A thin wrapper around the [`testingbot` CLI](https://github.com/testingbot/testingbotctl) with inputs that mirror the Maestro Cloud action, so migrating is usually a one-line change.
 
 ```yaml
 - uses: testingbot/maestro-action@v1
