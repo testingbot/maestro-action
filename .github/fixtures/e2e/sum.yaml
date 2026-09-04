@@ -1,0 +1,16 @@
+appId: com.sampleapp
+name: sum
+tags:
+  - e2e
+---
+- launchApp
+- tapOn:
+    id: inputA
+- inputText: "10"
+- tapOn:
+    id: inputB
+- inputText: "5"
+- tapOn:
+    id: sum
+- assertVisible:
+    text: "15"
