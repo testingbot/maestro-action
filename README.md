@@ -139,6 +139,50 @@ Branch, commit SHA, repository and pull request number/URL are filled in from th
 
 Check on it later with `testingbot status --id <app-id> --wait` or in the dashboard.
 
+## Triggers and pull requests from forks
+
+Run on `push` to your default branch and on `pull_request`. Forked pull requests cannot read repository secrets under `pull_request`; if you need them, use `pull_request_target` and check out the PR head explicitly so the proposed code is tested:
+
+```yaml
+on:
+  push:
+    branches: [main]
+  pull_request_target:
+    branches: [main]
+jobs:
+  maestro:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+```
+
+`ubuntu-latest` is enough for iOS as well: the flows run on TestingBot's simulators and devices, not on the runner.
+
+**Post the result to Slack**
+
+```yaml
+- uses: slackapi/slack-github-action@v2
+  if: always()
+  with:
+    method: chat.postMessage
+    token: ${{ secrets.SLACK_BOT_TOKEN }}
+    payload: |
+      channel: "C0123456789"
+      text: "Maestro on TestingBot: ${{ steps.maestro.outputs.outcome }} — ${{ steps.maestro.outputs.console-url }}"
+```
+
+**Secrets for your flows**
+
+```yaml
+    env: |
+      USERNAME=${{ secrets.TEST_USERNAME }}
+      PASSWORD=${{ secrets.TEST_PASSWORD }}
+```
+
+**One check per commit.** Each run posts one `TestingBot / tests` check. Cover several devices with `device-matrix` in a single run rather than separate runs on the same commit, which would share one check.
+
 ## Requirements
 
 Node.js 20 or newer on the runner (present on all GitHub-hosted runners) and `@testingbot/cli` 1.2.0 or newer, which the action installs with `npx`.
