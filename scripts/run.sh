@@ -89,6 +89,7 @@ if [[ -n "$repo" ]]; then
 fi
 [[ -n "${PR_NUMBER:-}" ]] && args+=(--pull-request-id "$PR_NUMBER")
 [[ -n "${PR_URL:-}" ]] && args+=(--pr-url "$PR_URL")
+[[ -n "${INPUT_CHECK_NAME:-}" ]] && args+=(--check-name "$INPUT_CHECK_NAME")
 
 is_true "${INPUT_ASYNC:-}" && args+=(--async)
 is_true "${INPUT_DRY_RUN:-}" && args+=(--dry-run)

@@ -124,6 +124,9 @@ inputs:
     description: 'Always upload the app instead of reusing an identical binary already stored.'
     required: false
     default: 'false'
+  check-name:
+    description: 'Name the pull request check "TestingBot / <name>" (e.g. iOS, Android) so several jobs on one commit post separate checks. Keep it stable per job.'
+    required: false
   cli-version:
     description: 'Version of @testingbot/cli to use.'
     required: false
@@ -196,6 +199,7 @@ runs:
         INPUT_TUNNEL: ${{ inputs.tunnel }}
         INPUT_TUNNEL_IDENTIFIER: ${{ inputs.tunnel-identifier }}
         INPUT_IGNORE_CHECKSUM_CHECK: ${{ inputs.ignore-checksum-check }}
+        INPUT_CHECK_NAME: ${{ inputs.check-name }}
         INPUT_CLI_VERSION: ${{ inputs.cli-version }}
         INPUT_DRY_RUN: ${{ inputs.dry-run }}
         INPUT_EXTRA_ARGS: ${{ inputs.extra-args }}

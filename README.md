@@ -61,6 +61,7 @@ The step fails when a flow fails (exit code 2) and on CLI or infrastructure erro
 | `download-artifacts` | `all` or `failed`: logs, screenshots, video as a zip in `artifacts-output-dir`. | |
 | `artifacts-output-dir` | Where the artifacts zip goes. | `testingbot-artifacts` |
 | `metadata` | Extra `KEY=VALUE` metadata shown on the run, one per line. | |
+| `check-name` | Names the PR check `TestingBot / <name>` (e.g. `iOS`, `Android`) so several jobs on one commit post separate checks. Keep it stable per job. | |
 | `groups` | Dashboard groups (comma-separated). | |
 | `throttle-network` | Network profile: `4G`, `3G`, `Edge`, `airplane` or `disable`. | |
 | `geo-country-code` | Device IP geolocation, ISO country code. | |
@@ -181,11 +182,11 @@ jobs:
       PASSWORD=${{ secrets.TEST_PASSWORD }}
 ```
 
-**One check per commit.** Each run posts one `TestingBot / tests` check. Cover several devices with `device-matrix` in a single run rather than separate runs on the same commit, which would share one check.
+**One check per job.** Each run posts one check, `TestingBot / tests` by default. When separate jobs test the same commit (iOS and Android), set `check-name: iOS` / `check-name: Android` so each posts its own check, requirable individually under branch protection. Within one job, cover several devices with `device-matrix`.
 
 ## Requirements
 
-Node.js 20 or newer on the runner (present on all GitHub-hosted runners) and `@testingbot/cli` 1.2.0 or newer, which the action installs with `npx`.
+Node.js 20 or newer on the runner (present on all GitHub-hosted runners) and `@testingbot/cli` 1.2.0 or newer, which the action installs with `npx`. `check-name` needs 1.4.0 or newer.
 
 ## License
 
