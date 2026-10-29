@@ -119,6 +119,11 @@ echo "::group::testingbot ${display[*]}"
 echo "Node $(node --version)"
 echo "::endgroup::"
 
+# The CLI (>= 1.5) writes its own job summary and annotations in GitHub
+# Actions. This action writes the summary below, so turn the CLI's off to
+# avoid two tables. Older CLIs ignore the variable.
+export TESTINGBOT_CI_SUMMARY=0
+
 set +e
 if is_true "${INPUT_ASYNC:-}" || is_true "${INPUT_DRY_RUN:-}"; then
   "${cli[@]}" "${args[@]}"
